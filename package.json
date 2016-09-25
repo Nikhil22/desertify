@@ -1,0 +1,15 @@
+{
+  "name": "desertify",
+  "version": "1.0.0",
+  "description": "A service that allows a restaurant to optimize the use of their table space during operational hours",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Nikhil Bhaskar <nikhil39@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  }
+}
