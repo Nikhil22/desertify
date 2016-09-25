@@ -73,6 +73,10 @@ const getArrivals = (obj) => {
 */
 const initialize = () => {
 
+  /*
+   * The key represents the seating capacity in terms of # of people
+   * The value represents the quantity of the table
+  */
 	const arrivalNumbersDaily = {
   		1: 5,
   		2: 20,
@@ -80,7 +84,11 @@ const initialize = () => {
   		4: 15,
   		5: 10
 	}
-  
+
+  /*
+   * The key represents the number of people in a group who enter a restaurant
+   * The value represents the number of times a day a group of size [key] enters
+  */
 	const tablesAvailableTemplate = {
 		2: 4,
 		3: 3,

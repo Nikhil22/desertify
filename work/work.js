@@ -6,6 +6,12 @@ let findSmallestLarger = require('../work/binarySearch')['findSmallestLarger'],
 
 /*
  * Seat as many customers (who are waiting in line) as we can
+ * @param {Number} arrival - the number of people in the group that arrived
+ * @param {Queue} enterQueue - a queue representing the people who are waiting to enter
+ * @param {Queue} exitQueue - a queue representing the people who are eating, ready to eventually exit
+ * @param {Object} tablesAvailable - a map representing the quantity & size of tables available
+ * @param {Number} revenue - revenue made so far by the restaurant
+ * @param {Number} avgRev - average revenue made per customer
  */
 const seatCustomer = (arrival, enterQueue, exitQueue, tablesAvailable, revenue, avgRev) => {
 	if (tablesAvailable.map[arrival] > 0) {
@@ -22,6 +28,7 @@ const seatCustomer = (arrival, enterQueue, exitQueue, tablesAvailable, revenue, 
 
 /*
  * Let the service begin!
+ * @return {Number} revenue - total revenue generated in full day of operation 
 */
 const openDoors = () => {
 
