@@ -29,40 +29,40 @@ const seatCustomer = (arrival, enterQueue, exitQueue, tablesAvailable, revenue, 
 /*
  * Let the service begin!
  * @return {Number} revenue - total revenue generated in full day of operation
-*/
+ */
 const openDoors = () => {
 
-	let {
-		likelyHoods,
-		shuffledArrivals,
-		tablesAvailable,
-		enterQueue,
-		exitQueue,
-		revenue
-	} = initialize();
+    let {
+        likelyHoods,
+        shuffledArrivals,
+        tablesAvailable,
+        enterQueue,
+        exitQueue,
+        revenue
+    } = initialize();
 
-	shuffledArrivals.forEach((arrival, idx) => {
-        
-		/* A person has waited too long in line to eat */
-		if (idx % constants.MAX_WAIT_TIME === 0) {
-			if (!enterQueue.isEmpty) enterQueue.dequeue();
-		}
+    shuffledArrivals.forEach((arrival, idx) => {
 
-		/* A person finishes eating, pays & exits */
-		if (idx % constants.ENTERS_PER_EXIT === 0) {
-			const leavingCustomer = exitQueue.dequeue();
-			revenue += leavingCustomer * constants.AVG_REVENUE_PER_CUSTOMER;
-			tablesAvailable.sync(leavingCustomer, false);
-		}
+        /* A person has waited too long in line to eat */
+        if (idx % constants.MAX_WAIT_TIME === 0) {
+            if (!enterQueue.isEmpty) enterQueue.dequeue();
+        }
 
-		if (tablesAvailable.map.has(arrival)) {
-			seatCustomer(arrival, enterQueue, exitQueue, tablesAvailable, revenue, constants.AVG_REVENUE_PER_CUSTOMER);
+        /* A person finishes eating, pays & exits */
+        if (idx % constants.ENTERS_PER_EXIT === 0) {
+            const leavingCustomer = exitQueue.dequeue();
+            revenue += leavingCustomer * constants.AVG_REVENUE_PER_CUSTOMER;
+            tablesAvailable.sync(leavingCustomer, false);
+        }
 
-			/*
-			 * If an exact matching table is not found for arrival, find the next largest table
-			 * Determine whether it would be worthwhile to seat the arrival in this larger table
-			 * Based on likelyhoods of future arrival sizes
-			*/
+        if (tablesAvailable.map.has(arrival)) {
+            seatCustomer(arrival, enterQueue, exitQueue, tablesAvailable, revenue, constants.AVG_REVENUE_PER_CUSTOMER);
+
+            /*
+             * If an exact matching table is not found for arrival, find the next largest table
+             * Determine whether it would be worthwhile to seat the arrival in this larger table
+             * Based on likelyhoods of future arrival sizes
+             */
             if (tablesAvailable.map.get(arrival) === 0) {
                 const smallestLarger = findSmallestLarger(tablesAvailable.list, arrival);
                 let potential$FromWaiting, potential$FromSeatingArrival;
@@ -74,14 +74,16 @@ const openDoors = () => {
 
                 if (potential$FromWaiting > potential$FromSeatingArrival) {
                     enterQueue.enqueue(arrival);
-                }else {
+                } else {
                     seatCustomer(smallestLarger, enterQueue, exitQueue, tablesAvailable, revenue, constants.AVG_REVENUE_PER_CUSTOMER);
                 }
             }
-		}
-	})
+        }
+    })
 
-	return revenue;
+    return revenue;
 }
 
-module.exports = {openDoors};
+module.exports = {
+    openDoors
+};
