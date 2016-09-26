@@ -24,7 +24,7 @@ const seatCustomer = (arrival, enterQueue, exitQueue, model, revenue, avgRev) =>
  * Make the newly arrived customer wait in line
  * @param {Queue} queue
  * @param {Number} arrival
-*/
+ */
 const waitCustomer = (queue, arrival) => {
     queue.enqueue(arrival);
 }
@@ -32,7 +32,7 @@ const waitCustomer = (queue, arrival) => {
 /*
  * Handle the case when a person has waited too long and leaves the restaurant
  * @param {Queue} queue
-*/
+ */
 const onPersonQuit = (queue) => {
     if (!queue.isEmpty) queue.dequeue();
 }
@@ -42,11 +42,11 @@ const onPersonQuit = (queue) => {
  * @param {Queue} queue
  * @param {TablesAvailable} model
  * @param {Number} avgRev
-*/
+ */
 const onCustomerExit = (queue, model, avgRev) => {
     const leavingCustomer = queue.dequeue();
     model.sync(leavingCustomer, false);
-    
+
     return leavingCustomer * avgRev;
 }
 
