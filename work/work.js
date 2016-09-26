@@ -2,29 +2,8 @@ let findSmallestLarger = require('../work/binarySearch')['findSmallestLarger'],
     constants = require('../work/constants'),
     initialize = require('../work/initialize'),
     Queue = require('../work/Queue'),
-    TablesAvailable = require('../work/TablesAvailable');
-
-/*
- * Seat as many customers (who are waiting in line) as we can
- * @param {Number} arrival - the number of people in the group that arrived
- * @param {Queue} enterQueue - a queue representing the people who are waiting to enter
- * @param {Queue} exitQueue - a queue representing the people who are eating, ready to eventually exit
- * @param {Map} tablesAvailable - a map representing the quantity & size of tables available
- * @param {Number} revenue - revenue made so far by the restaurant
- * @param {Number} avgRev - average revenue made per customer
- */
-const seatCustomer = (arrival, enterQueue, exitQueue, tablesAvailable, revenue, avgRev) => {
-    if (tablesAvailable.map.get(arrival) > 0) {
-        tablesAvailable.sync(arrival);
-        exitQueue.enqueue(arrival);
-
-        if (!enterQueue.isEmpty()) {
-            const enteringCustomer = enterQueue.dequeue();
-            seatCustomer(enteringCustomer, enterQueue, exitQueue, tablesAvailable, revenue, avgRev);
-            revenue += enteringCustomer * avgRev;
-        }
-    }
-}
+    TablesAvailable = require('../work/TablesAvailable'),
+    operation = require('../work/operation');
 
 /*
  * Let the service begin!
@@ -43,20 +22,18 @@ const openDoors = () => {
 
     shuffledArrivals.forEach((arrival, idx) => {
 
-        /* A person has waited too long in line to eat */
+        /* A person has waited too long in line to eat, they quit and leave */
         if (idx % constants.MAX_WAIT_TIME === 0) {
-            if (!enterQueue.isEmpty) enterQueue.dequeue();
+            operation.onPersonQuit(enterQueue);
         }
 
         /* A person finishes eating, pays & exits */
         if (idx % constants.ENTERS_PER_EXIT === 0) {
-            const leavingCustomer = exitQueue.dequeue();
-            revenue += leavingCustomer * constants.AVG_REVENUE_PER_CUSTOMER;
-            tablesAvailable.sync(leavingCustomer, false);
+            revenue += operation.onCustomerExit(exitQueue, tablesAvailable, constants.AVG_REVENUE_PER_CUSTOMER);
         }
 
         if (tablesAvailable.map.has(arrival)) {
-            seatCustomer(arrival, enterQueue, exitQueue, tablesAvailable, revenue, constants.AVG_REVENUE_PER_CUSTOMER);
+            operation.seatCustomer(arrival, enterQueue, exitQueue, tablesAvailable, revenue, constants.AVG_REVENUE_PER_CUSTOMER);
 
             /*
              * If an exact matching table is not found for arrival, find the next largest table
@@ -73,9 +50,9 @@ const openDoors = () => {
                 }
 
                 if (potential$FromWaiting > potential$FromSeatingArrival) {
-                    enterQueue.enqueue(arrival);
+                    operation.waitCustomer(enterQueue, arrival);
                 } else {
-                    seatCustomer(smallestLarger, enterQueue, exitQueue, tablesAvailable, revenue, constants.AVG_REVENUE_PER_CUSTOMER);
+                    operation.seatCustomer(smallestLarger, enterQueue, exitQueue, tablesAvailable, revenue, constants.AVG_REVENUE_PER_CUSTOMER);
                 }
             }
         }

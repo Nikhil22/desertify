@@ -32,7 +32,7 @@ class TablesAvailable {
 
     /*
      * Update our map of available tables
-     * @param {Number/String} key
+     * @param {Number} key
      * @param {Boolean} isDecr
      * @param {Number} num
      */
@@ -50,7 +50,7 @@ class TablesAvailable {
 
     /*
      * Synchronize our map & our list
-     * @param {Number/String} key
+     * @param {Number} key
      * @param {Boolean} isDecr
      * @param {Number} num
      */
