@@ -6,20 +6,20 @@
 * @return {Number} - the index of @el in @arr or (-m-1) where m is the insertion point for the new element
 */
 const binarySearch = (arr, el, compareFn=(a,b) => {return a - b}) => {
-		let m = 0;
-		let n = arr.length - 1;
-		while (m <= n) {
-				let k = (n + m) >> 1;
-				let cmp = compareFn(el, arr[k]);
-				if (cmp > 0) {
-						m = k + 1;
-				} else if(cmp < 0) {
-						n = k - 1;
-				} else {
-						return k;
-				}
-		}
-		return -m - 1;
+    let m = 0;
+    let n = arr.length - 1;
+    while (m <= n) {
+            let k = (n + m) >> 1;
+            let cmp = compareFn(el, arr[k]);
+            if (cmp > 0) {
+                    m = k + 1;
+            } else if(cmp < 0) {
+                    n = k - 1;
+            } else {
+                    return k;
+            }
+    }
+    return -m - 1;
 }
 
 /*

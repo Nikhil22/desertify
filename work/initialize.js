@@ -61,7 +61,7 @@ const getArrivals = (obj) => {
 
 	for (let [key, value] of entries(obj)) {
   		for (let i = 0; i < value; i++) {
-    		out.push(key);
+    		out.push(Number(key));
   		}
 	}
 
@@ -89,29 +89,28 @@ const initialize = () => {
    * The key represents the number of people in a group who enter a restaurant
    * The value represents the number of times a day a group of size [key] enters
   */
-	const tablesAvailableTemplate = {
-		2: 4,
-		3: 3,
-		4: 2,
-		5: 2
-	}
+	const tablesAvailableTemplate = new Map([
+        [2, 4],
+        [3, 3],
+        [4, 2],
+        [5, 2]
+    ]);
 
-	const totalArrivalsDaily = sumOfVals(arrivalNumbersDaily),
+    const totalArrivalsDaily = sumOfVals(arrivalNumbersDaily),
         likelyHoods = getLikelyHoods(arrivalNumbersDaily, totalArrivalsDaily),
         arrivals = getArrivals(arrivalNumbersDaily),
         shuffledArrivals = shuffle(arrivals);
 
-  let tablesAvailable = new TablesAvailable(tablesAvailableTemplate);
+    let tablesAvailable = new TablesAvailable(tablesAvailableTemplate);
 
-
-  /*
-   * a queue representing the people who are waiting to enter
-  */
+    /*
+    * a queue representing the people who are waiting to enter
+    */
 	let enterQueue = new Queue();
 
-  /*
-   * a queue representing the people who are eating, ready to eventually exit
-  */
+    /*
+    * a queue representing the people who are eating, ready to eventually exit
+    */
 	let exitQueue = new Queue();
 	let revenue = 0;
 

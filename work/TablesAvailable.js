@@ -1,4 +1,3 @@
-let entries = require('../work/entries');
 /*
  * A stateful object representing the size of each table available
  * Keeps track of this both a map and list representation
@@ -6,25 +5,29 @@ let entries = require('../work/entries');
 class TablesAvailable {
 
 	/*
-	 * Set our map to @obj and synchronize our list with the newly created map
-	 * @param {Object} obj
+	 * Set our map to @map and synchronize our list with the newly created map
+	 * @param {Map} map
 	*/
-	constructor(obj) {
-		this.map = obj;
+	constructor(map) {
+		this.map = map;
 		this.syncList();
 	}
 
 	/*
 	 * Synchronize our list with our map
+	 * This is a sorted list, where where each element represents the size of a table
+	 * Each element appears the same amount of times as there are number of available tables of that size in the restaurant
+	 * i.e [2,2,2,3,3,4] -> three 2-seaters, two 3-seaters, one 4-seater
 	*/
 	syncList() {
-		this.list = [];
+		let self = this;
+		self.list = [];
 
-		for (let [key, value] of entries(this.map)) {
-			for (let i = 0; i < value; i++) {
-				this.list.push(key)
+		this.map.forEach((v, k) => {
+			for (let i = 0; i < v; i++) {
+				self.list.push(k);
 			}
-		}
+		});
 	}
 
 	/*
@@ -35,11 +38,11 @@ class TablesAvailable {
 	*/
 	updateAvailability(key, isDecr, num) {
 
-		if (this.map[key] > 0) {
+		if (this.map.get(key) > 0) {
 			if (isDecr) {
-				this.map[key] -= num;
+				this.map.set(key, this.map.get(key) - num);
 			}else {
-				this.map[key] += num;
+				this.map.set(key, this.map.get(key) + num);
 			}
 		}
 
